@@ -1,0 +1,9 @@
+**/.vscode
+**/.data
+**/.ipynb_checkpoints/
+**/**/__pycache__
+**/.pytest_cache
+**/Untitled**
+**/.vscode_jupyter_temp
+**/test.py
+**/.DS_Store
