@@ -100,7 +100,26 @@ def softmax_regression_epoch(X, y, theta, lr = 0.1, batch=100):
         None
     """
     ### BEGIN YOUR CODE
-    pass
+    num_examples = X.shape[0]
+    num_iteration = num_examples // batch
+    for i in range(num_iteration):
+        X_iter = X[i * batch: (i + 1) * batch]
+        y_iter = y[i * batch: (i + 1) * batch]
+        Z_iter = np.exp(np.dot(X_iter, theta))
+        Z_iter = (Z_iter.T / np.sum(Z_iter, axis=1)).T
+        I_iter = np.zeros(Z_iter.shape, dtype=np.float32).reshape(-1)
+        I_iter[[(y_iter[i] + (i * Z_iter.shape[1])) for i in range(Z_iter.shape[0])]] = 1
+        I_iter = I_iter.reshape(Z_iter.shape)
+        theta -= lr * np.dot(X_iter.T, Z_iter - I_iter) / Z_iter.shape[0]
+    if num_examples % batch != 0:
+        X_iter = X[num_iteration * batch: ]
+        y_iter = y[num_iteration * batch: ]
+        Z_iter = np.exp(np.dot(X_iter, theta))
+        Z_iter = (Z_iter.T / np.sum(Z_iter, axis=1)).T
+        I_iter = np.zeros(Z_iter.shape, dtype=np.float32).reshape(-1)
+        I_iter[[(y_iter[i] + (i * Z_iter.shape[1])) for i in range(Z_iter.shape[0])]] = 1
+        I_iter = I_iter.reshape(Z_iter.shape)
+        theta -= lr * np.dot(X_iter.T, Z_iter - I_iter) / Z_iter.shape[0]
     ### END YOUR CODE
 
 
