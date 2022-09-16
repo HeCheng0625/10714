@@ -101,8 +101,8 @@ def softmax_regression_epoch(X, y, theta, lr = 0.1, batch=100):
     """
     ### BEGIN YOUR CODE
     num_examples = X.shape[0]
-    num_iteration = num_examples // batch
-    for i in range(num_iteration):
+    num_iter = num_examples // batch
+    for i in range(num_iter):
         X_iter = X[i * batch: (i + 1) * batch]
         y_iter = y[i * batch: (i + 1) * batch]
         Z_iter = np.exp(np.dot(X_iter, theta))
@@ -112,8 +112,8 @@ def softmax_regression_epoch(X, y, theta, lr = 0.1, batch=100):
         I_iter = I_iter.reshape(Z_iter.shape)
         theta -= lr * np.dot(X_iter.T, Z_iter - I_iter) / Z_iter.shape[0]
     if num_examples % batch != 0:
-        X_iter = X[num_iteration * batch: ]
-        y_iter = y[num_iteration * batch: ]
+        X_iter = X[num_iter * batch: ]
+        y_iter = y[num_iter * batch: ]
         Z_iter = np.exp(np.dot(X_iter, theta))
         Z_iter = (Z_iter.T / np.sum(Z_iter, axis=1)).T
         I_iter = np.zeros(Z_iter.shape, dtype=np.float32).reshape(-1)
@@ -146,7 +146,37 @@ def nn_epoch(X, y, W1, W2, lr = 0.1, batch=100):
         None
     """
     ### BEGIN YOUR CODE
-    pass
+    ### BEGIN YOUR CODE
+    num_examples = X.shape[0]
+    num_iter = num_examples // batch
+    for i in range(num_iter):
+        X_iter = X[i * batch: (i + 1) * batch]
+        y_iter = y[i * batch: (i + 1) * batch]
+        Z_1_iter = np.dot(X_iter, W1)
+        Z_1_iter = np.where(Z_1_iter > 0, Z_1_iter, 0)
+        E_iter = np.exp(np.dot(Z_1_iter, W2))
+        E_iter = (E_iter.T / np.sum(E_iter, axis=1)).T
+        I_iter = np.zeros(E_iter.shape, dtype=np.float32).reshape(-1)
+        I_iter[[(y_iter[i] + (i * E_iter.shape[1])) for i in range(E_iter.shape[0])]] = 1
+        I_iter = I_iter.reshape(E_iter.shape) 
+        G_iter_2 = E_iter - I_iter
+        G_iter_1 = np.where(Z_1_iter > 0, np.ones(Z_1_iter.shape), 0) * (np.dot(G_iter_2, W2.T))
+        W1 -= lr * np.dot(X_iter.T, G_iter_1) / X_iter.shape[0]
+        W2 -= lr * np.dot(Z_1_iter.T, G_iter_2) / X_iter.shape[0]
+    if num_examples % batch != 0:
+        X_iter = X[num_iter * batch: ]
+        y_iter = y[num_iter * batch: ]
+        Z_1_iter = np.dot(X_iter, W1)
+        Z_1_iter = np.where(Z_1_iter > 0, Z_1_iter, 0)
+        E_iter = np.exp(np.dot(Z_1_iter, W2))
+        E_iter = (E_iter.T / np.sum(E_iter, axis=1)).T
+        I_iter = np.zeros(E_iter.shape, dtype=np.float32).reshape(-1)
+        I_iter[[(y_iter[i] + (i * E_iter.shape[1])) for i in range(E_iter.shape[0])]] = 1
+        I_iter = I_iter.reshape(E_iter.shape) 
+        G_iter_2 = E_iter - I_iter
+        G_iter_1 = np.where(Z_1_iter > 0, np.ones(Z_1_iter.shape), 0) * (np.dot(G_iter_2, W2.T))
+        W1 -= lr * np.dot(X_iter.T, G_iter_1) / X_iter.shape[0]
+        W2 -= lr * np.dot(Z_1_iter.T, G_iter_2) / X_iter.shape[0]
     ### END YOUR CODE
 
 
