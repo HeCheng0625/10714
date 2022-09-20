@@ -38,8 +38,8 @@ void softmax_regression_epoch_cpp(const float *X, const unsigned char *y,
         size_t batch_size = batch;
         float *X_iter = new float[batch_size * n];   // batch_size * n
         unsigned char *y_iter = new unsigned char[batch_size];   // batch_size
-        for (int j = 0; j < batch_size; j++) {
-            for (int t = 0; t < n; t++) {
+        for (int j = 0; j < (int)batch_size; j++) {
+            for (int t = 0; t < (int)n; t++) {
                 X_iter[j * n + t] = X[(batch_size * i + j) * n + t];
             }
             y_iter[j] = y[batch_size * i + j];
@@ -47,37 +47,37 @@ void softmax_regression_epoch_cpp(const float *X, const unsigned char *y,
         // batch_size * k, Z[u][v] = sum(X[u][t] * theta[t][v])
         // X[u][t] = X[u * n + t], theta[t][v] = theta[t * k + v]
         float *Z_iter = new float[batch_size * k];
-        for (int u = 0; u < batch_size; u++) {
-            for (int v = 0; v < k; v++) {
+        for (int u = 0; u < (int)batch_size; u++) {
+            for (int v = 0; v < (int)k; v++) {
                 Z_iter[u * k + v] = 0;
-                for (int t = 0; t < n; t++) {
+                for (int t = 0; t < (int)n; t++) {
                     Z_iter[u * k + v] += X_iter[u * n + t] * theta[t * k + v];
                 }
                 Z_iter[u * k + v] = std::exp(Z_iter[u * k + v]);
             }
         }
-        for (int j = 0; j < batch_size; j++) {
+        for (int j = 0; j < (int)batch_size; j++) {
             float norm_sum = 0;
-            for (int t = 0; t < k; t++) {
+            for (int t = 0; t < (int)k; t++) {
                 norm_sum += Z_iter[j * k + t];
             }
-            for (int t = 0; t < k; t++) {
+            for (int t = 0; t < (int)k; t++) {
                 Z_iter[j * k + t] /= norm_sum; 
             }
             Z_iter[j * k + (int)y_iter[j]] -= 1;
         }
         // X_iter^T * Z_iter -> (n * batch_size) * (batch_size * k)
         float *D_iter = new float[n * k];
-        for (int u = 0; u < n; u++) {
-            for (int v = 0; v < k; v++) {
+        for (int u = 0; u < (int)n; u++) {
+            for (int v = 0; v < (int)k; v++) {
                 D_iter[u * k + v] = 0;
-                for (int t = 0; t < batch_size; t++) {
+                for (int t = 0; t < (int)batch_size; t++) {
                     D_iter[u * k + v] += X_iter[t * n + u] * Z_iter[t * k + v];
                 }
                 D_iter[u * k + v] /= batch_size;
             }
         }
-        for (int j = 0; j < n * k; j++) theta[j] -= lr * D_iter[j];
+        for (int j = 0; j < (int)(n * k); j++) theta[j] -= lr * D_iter[j];
         delete[] y_iter;
         delete[] X_iter;
         delete[] Z_iter;
@@ -87,8 +87,8 @@ void softmax_regression_epoch_cpp(const float *X, const unsigned char *y,
         size_t batch_size = m % batch;
         float *X_iter = new float[batch_size * n];   // batch_size * n
         unsigned char *y_iter = new unsigned char[batch_size];   // batch_size
-        for (int j = 0; j < batch_size; j++) {
-            for (int t = 0; t < n; t++) {
+        for (int j = 0; j < (int)batch_size; j++) {
+            for (int t = 0; t < (int)n; t++) {
                 X_iter[j * n + t] = X[(batch_size * num_iter + j) * n + t];
             }
             y_iter[j] = y[batch_size * num_iter + j];
@@ -96,37 +96,37 @@ void softmax_regression_epoch_cpp(const float *X, const unsigned char *y,
         // batch_size * k, Z[u][v] = sum(X[u][t] * theta[t][v])
         // X[u][t] = X[u * n + t], theta[t][v] = theta[t * k + v]
         float *Z_iter = new float[batch_size * k];
-        for (int u = 0; u < batch_size; u++) {
-            for (int v = 0; v < k; v++) {
+        for (int u = 0; u < (int)batch_size; u++) {
+            for (int v = 0; v < (int)k; v++) {
                 Z_iter[u * k + v] = 0;
-                for (int t = 0; t < n; t++) {
+                for (int t = 0; t < (int)n; t++) {
                     Z_iter[u * k + v] += X_iter[u * n + t] * theta[t * k + v];
                 }
                 Z_iter[u * k + v] = std::exp(Z_iter[u * k + v]);
             }
         }
-        for (int j = 0; j < batch_size; j++) {
+        for (int j = 0; j < (int)batch_size; j++) {
             float norm_sum = 0;
-            for (int t = 0; t < k; t++) {
+            for (int t = 0; t < (int)k; t++) {
                 norm_sum += Z_iter[j * k + t];
             }
-            for (int t = 0; t < k; t++) {
+            for (int t = 0; t < (int)k; t++) {
                 Z_iter[j * k + t] /= norm_sum; 
             }
             Z_iter[j * k + (int)y_iter[j]] -= 1;
         }
         // X_iter^T * Z_iter -> (n * batch_size) * (batch_size * k)
         float *D_iter = new float[n * k];
-        for (int u = 0; u < n; u++) {
-            for (int v = 0; v < k; v++) {
+        for (int u = 0; u < (int)n; u++) {
+            for (int v = 0; v < (int)k; v++) {
                 D_iter[u * k + v] = 0;
-                for (int t = 0; t < batch_size; t++) {
+                for (int t = 0; t < (int)batch_size; t++) {
                     D_iter[u * k + v] += X_iter[t * n + u] * Z_iter[t * k + v];
                 }
                 D_iter[u * k + v] /= batch_size;
             }
         }
-        for (int j = 0; j < n * k; j++) theta[j] -= lr * D_iter[j];
+        for (int j = 0; j < (int)(n * k); j++) theta[j] -= lr * D_iter[j];
         delete[] y_iter;
         delete[] X_iter;
         delete[] Z_iter;
