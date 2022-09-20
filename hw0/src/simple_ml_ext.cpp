@@ -72,7 +72,7 @@ void softmax_regression_epoch_cpp(const float *X, const unsigned char *y,
             for (int v = 0; v < k; v++) {
                 D_iter[u * k + v] = 0;
                 for (int t = 0; t < batch_size; t++) {
-                    D_iter[u * k + v] += X_iter[t * batch_size + u] * Z_iter[t * k + v];
+                    D_iter[u * k + v] += X_iter[t * n + u] * Z_iter[t * k + v];
                 }
                 D_iter[u * k + v] /= batch_size;
             }
@@ -121,7 +121,7 @@ void softmax_regression_epoch_cpp(const float *X, const unsigned char *y,
             for (int v = 0; v < k; v++) {
                 D_iter[u * k + v] = 0;
                 for (int t = 0; t < batch_size; t++) {
-                    D_iter[u * k + v] += X_iter[t * batch_size + u] * Z_iter[t * k + v];
+                    D_iter[u * k + v] += X_iter[t * n + u] * Z_iter[t * k + v];
                 }
                 D_iter[u * k + v] /= batch_size;
             }
